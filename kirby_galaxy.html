@@ -1,0 +1,47 @@
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>K I R B Y   G A L A X Y</title>
+
+		<link rel="stylesheet" href="../css/main.css" />
+		<link rel="stylesheet" href="../css/threejsscene.css" />
+		<link rel="stylesheet" href="mainPageCSS.css">
+		<script type="module" defer src="kirby_galaxy.js"></script>
+	</head>
+
+
+	<body> 
+		<div id="all"> 
+				<section class="wrapper">
+					<div id="stars"></div>
+					<div id="stars2"></div>
+					<div id="stars3"></div>
+				</section>
+				<div class="top_column">
+					<a href="mainPage.html">
+						<img src="../images/Main-menu.png" alt="Normal text">
+					</a>
+					<div class="top_column">
+						<h2 id="score_title">SCORE:</h2>
+						<form action="gameOver.html" method="GET">
+							<p name="num_score" id="num_score">0</p> 
+						</form>
+					</div>
+					<div class="top_column">
+						<h2 id="title">Kirby Galaxy</h2>
+					</div>
+				</div>
+				
+
+				
+				
+				<canvas id="webglcanvas" width=800 height=600>
+				</canvas>
+			</div>
+			
+			
+		</div>
+	</body>
+
+</html>
