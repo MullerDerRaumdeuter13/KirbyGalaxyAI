@@ -27,6 +27,8 @@ let boxBBox;
 
 let LoKirby1;
 let LoKirby2;
+let LoKirby3;
+let LoKirby4;
 let LoKirbyBBox;
 let kirbysBBox;
 let kirby_obj;
@@ -157,6 +159,7 @@ function createLoKirby1(){
 
     //-------Position
     LoKirby1.position.x = 1
+    LoKirby1.position.y = 1
     LoKirby1.position.z = 50;
 
     //------Hitbox
@@ -175,10 +178,49 @@ function createLoKirby2(){
 
     //-------Position
     LoKirby2.position.x = -1
+    LoKirby2.position.y = 1
     LoKirby2.position.z = 50;
 
     //------Hitbox
     LoKirbyBBox =  new THREE.BoxHelper(LoKirby2, 0x00ff00);
+    LoKirbyBBox.update();
+    LoKirbyBBox.visible = false;
+}
+
+function createLoKirby3(){
+    //-------Create and add to the scene
+    const geometry = new THREE.SphereGeometry(0.15, 25, 10);
+    const material = new THREE.MeshBasicMaterial({color: 0xfedc8});
+    LoKirby3 = new THREE.Mesh(geometry, material);
+    scene.add(LoKirby3);
+    arrKirbys.push(LoKirby3);
+
+    //-------Position
+    LoKirby3.position.x = 1
+    LoKirby3.position.y = -1
+    LoKirby3.position.z = 50;
+
+    //------Hitbox
+    LoKirbyBBox =  new THREE.BoxHelper(LoKirby3, 0x00ff00);
+    LoKirbyBBox.update();
+    LoKirbyBBox.visible = false;
+}
+
+function createLoKirby4(){
+    //-------Create and add to the scene
+    const geometry = new THREE.SphereGeometry(0.15, 25, 10);
+    const material = new THREE.MeshBasicMaterial({color: 0xfedc8});
+    LoKirby4 = new THREE.Mesh(geometry, material);
+    scene.add(LoKirby4);
+    arrKirbys.push(LoKirby4);
+
+    //-------Position
+    LoKirby4.position.x = -1
+    LoKirby4.position.y = -1
+    LoKirby4.position.z = 50;
+
+    //------Hitbox
+    LoKirbyBBox =  new THREE.BoxHelper(LoKirby4, 0x00ff00);
     LoKirbyBBox.update();
     LoKirbyBBox.visible = false;
 }
@@ -284,8 +326,10 @@ function animate()
     //move the snowballs and erase 
     for(const snowball of arrSnow){
         snowball.position.z += 0.5
-        if(snowball.position.x >= 0){
-            if(snowball.position.x > LoKirby1.position.x && snowball.position.x >= 0){
+
+        //--------------------------------------------------------Kirby1
+        if(snowball.position.x >= 0 && snowball.position.y >= 0){
+            if(snowball.position.x > LoKirby1.position.x){
                 LoKirby1.position.x += 0.25
             }
             if(snowball.position.y > LoKirby1.position.y){
@@ -298,9 +342,10 @@ function animate()
                 LoKirby1.position.y -= 0.25
             }
         }
-
-        if(snowball.position.x < 0){
-            if(snowball.position.x > LoKirby2.position.x && snowball.position.x >= 0){
+        
+        //--------------------------------------------------------Kirby2
+        if(snowball.position.x < 0 && snowball.position.y >= 0){
+            if(snowball.position.x > LoKirby2.position.x){
                 LoKirby2.position.x += 0.25
             }
             if(snowball.position.y > LoKirby2.position.y){
@@ -311,6 +356,38 @@ function animate()
             }
             if(snowball.position.y < LoKirby2.position.y){
                 LoKirby2.position.y -= 0.25
+            }
+        }
+
+        //-------------------------------------------------------------Kirby3
+        if(snowball.position.x >= 0 && snowball.position.y < 0){
+            if(snowball.position.x > LoKirby3.position.x){
+                LoKirby3.position.x += 0.25
+            }
+            if(snowball.position.y > LoKirby3.position.y){
+                LoKirby3.position.y += 0.25
+            }
+            if(snowball.position.x < LoKirby3.position.x){
+                LoKirby3.position.x -= 0.25
+            }
+            if(snowball.position.y < LoKirby3.position.y){
+                LoKirby3.position.y -= 0.25
+            }
+        }
+
+        //-------------------------------------------------------------Kirby4
+        if(snowball.position.x < 0 && snowball.position.y < 0){
+            if(snowball.position.x > LoKirby4.position.x){
+                LoKirby4.position.x += 0.25
+            }
+            if(snowball.position.y > LoKirby4.position.y){
+                LoKirby4.position.y += 0.25
+            }
+            if(snowball.position.x < LoKirby4.position.x){
+                LoKirby4.position.x -= 0.25
+            }
+            if(snowball.position.y < LoKirby4.position.y){
+                LoKirby4.position.y -= 0.25
             }
         }
         
@@ -326,6 +403,9 @@ function animate()
     //move cones/bullets and erase
     for (const bullet of arrBullets){
         bullet.position.z += 0.5
+
+    
+        //------------------------Kirby 1
         if(LoKirby1.position.x === bullet.position.x && LoKirby1.position.y === bullet.position.y){
             let randomMovement = randomInt(0,3);
             switch (randomMovement){
@@ -339,6 +419,7 @@ function animate()
                     LoKirby1.position.y -=1;
             }
         }
+        //-------------------Kirby2
         if(LoKirby2.position.x === bullet.position.x && LoKirby2.position.y === bullet.position.y){
             let randomMovement = randomInt(0,3);
             switch (randomMovement){
@@ -350,6 +431,34 @@ function animate()
                     LoKirby2.position.y +=1;
                 case 3:
                     LoKirby2.position.y -=1;
+            }
+        }
+        //----------------------Kirby3
+        if(LoKirby3.position.x === bullet.position.x && LoKirby3.position.y === bullet.position.y){
+            let randomMovement = randomInt(0,3);
+            switch (randomMovement){
+                case 0:
+                    LoKirby3.position.x +=1;
+                case 1:
+                    LoKirby3.position.x -=1;
+                case 2:
+                    LoKirby3.position.y +=1;
+                case 3:
+                    LoKirby3.position.y -=1;
+            }
+        }
+        //-----------------------Kirby4
+        if(LoKirby4.position.x === bullet.position.x && LoKirby4.position.y === bullet.position.y){
+            let randomMovement = randomInt(0,3);
+            switch (randomMovement){
+                case 0:
+                    LoKirby4.position.x +=1;
+                case 1:
+                    LoKirby4.position.x -=1;
+                case 2:
+                    LoKirby4.position.y +=1;
+                case 3:
+                    LoKirby4.position.y -=1;
             }
         }
         if(bullet.position.z > 51){
@@ -408,7 +517,9 @@ function update()
     if(snowsBox.intersectsBox(kirbyBox2)){
         scene.remove(snow)
         //Kirby touched a snowball, points for the player
+        console.log("Hit 2\nPrevious: " + score)
         powerUp();
+        console.log("Hit 2\n After: " + score)
     }
     
     animate();
@@ -481,6 +592,8 @@ function createScene(canvas)
     //loadGLTF('../models/obj/Kirbo.glb');
     createLoKirby1();
     createLoKirby2();
+    createLoKirby3();
+    createLoKirby4();
 
     //Music
     loadMusic();
