@@ -116,7 +116,7 @@ function getClosestSnow(){
     });
     let minimumdistance = arrDistances.min;
     let index = arrDistances.indexOf(minimumdistance);
-    return arrBullets[index]
+    return arrSnow[index]
 
 }
 

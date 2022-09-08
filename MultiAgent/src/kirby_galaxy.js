@@ -25,7 +25,8 @@ let snowBBox;
 
 let boxBBox;
 
-let LoKirby;
+let LoKirby1;
+let LoKirby2;
 let LoKirbyBBox;
 let kirbysBBox;
 let kirby_obj;
@@ -41,16 +42,8 @@ function main()
     const canvas = document.getElementById("webglcanvas");
     createScene(canvas);
     createRing1();
-    for(let i = 0; i <= 5 ; i ++){
-        createIceCream();
-        createCone();
-    }
-    createLoKirbys(0,0);
-    createLoKirbys(1,0);
-    createLoKirbys(0,1);
-    createLoKirbys(-1,0);
-    console.log("Kirbys: " + arrKirbys);
-    
+    createIceCream();
+    createCone();
     update();
 }
 
@@ -112,7 +105,7 @@ async function loadGLTF(gltfModelUrl)
     }
 }
 
-function getClosestSnow(LoKirby){
+function getClosestSnow(){
     let arrDistances = []
     arrSnow.forEach(snow => {
         //-----------------------Formula for finding the distance between 2 objects in 3d
@@ -154,21 +147,38 @@ function createRing3(){
     scene.add(ring3);
 }
 
-function createLoKirbys(x, y){
+function createLoKirby1(){
     //-------Create and add to the scene
-    const geometry = new THREE.SphereGeometry(0.25, 25, 10);
+    const geometry = new THREE.SphereGeometry(0.15, 25, 10);
     const material = new THREE.MeshBasicMaterial({color: 0xfedc8});
-    LoKirby = new THREE.Mesh(geometry, material);
-    arrKirbys.push(LoKirby);
-    scene.add(LoKirby);
+    LoKirby1 = new THREE.Mesh(geometry, material);
+    scene.add(LoKirby1);
+    arrKirbys.push(LoKirby1);
 
     //-------Position
-    LoKirby.position.x = x
-    LoKirby.position.y = y
-    LoKirby.position.z = 50;
+    LoKirby1.position.x = 1
+    LoKirby1.position.z = 50;
 
     //------Hitbox
-    LoKirbyBBox =  new THREE.BoxHelper(snow, 0x00ff00);
+    LoKirbyBBox =  new THREE.BoxHelper(LoKirby1, 0x00ff00);
+    LoKirbyBBox.update();
+    LoKirbyBBox.visible = false;
+}
+
+function createLoKirby2(){
+    //-------Create and add to the scene
+    const geometry = new THREE.SphereGeometry(0.15, 25, 10);
+    const material = new THREE.MeshBasicMaterial({color: 0xfedc8});
+    LoKirby2 = new THREE.Mesh(geometry, material);
+    scene.add(LoKirby2);
+    arrKirbys.push(LoKirby2);
+
+    //-------Position
+    LoKirby2.position.x = -1
+    LoKirby2.position.z = 50;
+
+    //------Hitbox
+    LoKirbyBBox =  new THREE.BoxHelper(LoKirby2, 0x00ff00);
     LoKirbyBBox.update();
     LoKirbyBBox.visible = false;
 }
@@ -270,58 +280,78 @@ function animate()
         else
             ring.position.z += 26*angle;
     
-    arrKirbys.forEach(LoKirby => {
-        console.log("Kirby: " + arrKirbys.indexOf(LoKirby) +  "\nx:" + LoKirby.position.x + "\ny: " + LoKirby.position.y)
-    });
-    
 
-    //move the snowballs and erase
-    arrKirbys.forEach(LoKirby => {
-        let snowball = getClosestSnow(LoKirby)
-        if(snowball.position.x > LoKirby.position.x){
-            LoKirby.position.x += 0.25
+    //move the snowballs and erase 
+    for(const snowball of arrSnow){
+        snowball.position.z += 0.5
+        if(snowball.position.x >= 0){
+            if(snowball.position.x > LoKirby1.position.x && snowball.position.x >= 0){
+                LoKirby1.position.x += 0.25
+            }
+            if(snowball.position.y > LoKirby1.position.y){
+                LoKirby1.position.y += 0.25
+            }
+            if(snowball.position.x < LoKirby1.position.x){
+                LoKirby1.position.x -= 0.25
+            }
+            if(snowball.position.y < LoKirby1.position.y){
+                LoKirby1.position.y -= 0.25
+            }
         }
-        if(snowball.position.y > LoKirby.position.y){
-            LoKirby.position.y += 0.25
+
+        if(snowball.position.x < 0){
+            if(snowball.position.x > LoKirby2.position.x && snowball.position.x >= 0){
+                LoKirby2.position.x += 0.25
+            }
+            if(snowball.position.y > LoKirby2.position.y){
+                LoKirby2.position.y += 0.25
+            }
+            if(snowball.position.x < LoKirby2.position.x){
+                LoKirby2.position.x -= 0.25
+            }
+            if(snowball.position.y < LoKirby2.position.y){
+                LoKirby2.position.y -= 0.25
+            }
         }
-        if(snowball.position.x < LoKirby.position.x){
-            LoKirby.position.x -= 0.25
-        }
-        if(snowball.position.y < LoKirby.position.y){
-            LoKirby.position.y -= 0.25
-        }
-                  
-    }); 
-    for(const snow of arrSnow){
-        snow.position.z += 0.5
+        
         if(snowball.position.z > 51){
-            scene.remove(snow)
+            scene.remove(snowball)
             scene.remove(snowBBox)
 
-            arrSnow.pop(snow)
+            arrSnow.pop(snowball)
             createIceCream()
-        } 
         }
-
+    }
 
     //move cones/bullets and erase
     for (const bullet of arrBullets){
         bullet.position.z += 0.5
-        arrKirbys.forEach(LoKirby => {
-            if(LoKirby.position.x === bullet.position.x && LoKirby.position.y === bullet.position.y){
-                let randomMovement = randomInt(0,3);
-                switch (randomMovement){
-                    case 0:
-                        LoKirby.position.x +=1;
-                    case 1:
-                        LoKirby.position.x -=1;
-                    case 2:
-                        LoKirby.position.y +=1;
-                    case 3:
-                        LoKirby.position.y -=1;
-                }
+        if(LoKirby1.position.x === bullet.position.x && LoKirby1.position.y === bullet.position.y){
+            let randomMovement = randomInt(0,3);
+            switch (randomMovement){
+                case 0:
+                    LoKirby1.position.x +=1;
+                case 1:
+                    LoKirby1.position.x -=1;
+                case 2:
+                    LoKirby1.position.y +=1;
+                case 3:
+                    LoKirby1.position.y -=1;
             }
-        });
+        }
+        if(LoKirby2.position.x === bullet.position.x && LoKirby2.position.y === bullet.position.y){
+            let randomMovement = randomInt(0,3);
+            switch (randomMovement){
+                case 0:
+                    LoKirby2.position.x +=1;
+                case 1:
+                    LoKirby2.position.x -=1;
+                case 2:
+                    LoKirby2.position.y +=1;
+                case 3:
+                    LoKirby2.position.y -=1;
+            }
+        }
         if(bullet.position.z > 51){
             scene.remove(bullet)
             scene.remove(boxBBox)
@@ -333,12 +363,12 @@ function animate()
     //--------------------------------------------------------------AI
 
     //if(closestSnow){console.log("Closest Snow \n" + closestSnow.position)}
-    /*arrBullets.forEach(bullet => {
+    arrBullets.forEach(bullet => {
         
         
-    });*/
-
+    });
 }
+
 /**
  * Runs the update loop: updates the objects in the scene
  */
@@ -356,15 +386,26 @@ function update()
     snowBBox.update();
 
     //Check for collisions
-    const kirbyBox = new THREE.Box3().setFromObject(LoKirby);
+    const kirbyBox1 = new THREE.Box3().setFromObject(LoKirby1);
+    const kirbyBox2 = new THREE.Box3().setFromObject(LoKirby2);
     const boxBox = new THREE.Box3().setFromObject(cone);
     const snowsBox = new THREE.Box3().setFromObject(snow);
-    if(boxBox.intersectsBox(kirbyBox)){
+    if(boxBox.intersectsBox(kirbyBox1)){
         localStorage.setItem("SCORE", JSON.stringify(score));
         //Bullet hit Kirby so Game Over :(
-        window.location.replace('gameOver.html')
+        //window.location.replace('gameOver.html')
     }
-    if(snowsBox.intersectsBox(kirbyBox)){
+    if(boxBox.intersectsBox(kirbyBox2)){
+        localStorage.setItem("SCORE", JSON.stringify(score));
+        //Bullet hit Kirby so Game Over :(
+        //window.location.replace('gameOver.html')
+    }
+    if(snowsBox.intersectsBox(kirbyBox1)){
+        scene.remove(snow)
+        //Kirby touched a snowball, points for the player
+        powerUp();
+    }
+    if(snowsBox.intersectsBox(kirbyBox2)){
         scene.remove(snow)
         //Kirby touched a snowball, points for the player
         powerUp();
@@ -438,8 +479,8 @@ function createScene(canvas)
     scene.add(ambientLight);
     //kirby model
     //loadGLTF('../models/obj/Kirbo.glb');
-
-    
+    createLoKirby1();
+    createLoKirby2();
 
     //Music
     loadMusic();
